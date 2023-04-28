@@ -4,24 +4,29 @@ import sys
 from copy import deepcopy
 from random import choice, randrange
 
-pygame.init()
 FONT_SIZE = 20
-katakana = [chr(int('0x30a0', 16) + i) for i in range(96)]
-font1 = pygame.font.Font('font/ms mincho.ttf', FONT_SIZE)  # , bold=True
-green_katakana = [font1.render(char, True, (40, randrange(160, 256), 40)) for char in katakana]
-lightgreen_katakana = [font1.render(char, True, pygame.Color('lightgreen')) for char in katakana]
+MAX_ALPHA_VALUE = 90
+GROWTH_RATE = 6
+START_KATAKANA_CHAR_POS = int('0x30a0', 16)
+SIZE_OF_ALPHABET = 96
+
+pygame.init()
+KATAKANA = [chr(START_KATAKANA_CHAR_POS + i) for i in range(SIZE_OF_ALPHABET)]
+FONT1 = pygame.font.Font('font/MS Mincho.ttf', FONT_SIZE)
+GREEN_KATAKANA = [FONT1.render(char, True, (40, randrange(160, 256), 40)) for char in KATAKANA]
+LIGHTGREEN_KATAKANA = [FONT1.render(char, True, pygame.Color('lightgreen')) for char in KATAKANA]
 
 class Symbol:
     def __init__(self, x, y, speed):
         self.x, self.y = x, y
         self.speed = speed
-        self.value = choice(green_katakana)
+        self.value = choice(GREEN_KATAKANA)
         self.interval = randrange(5, 30)
 
     def draw(self, color, window, surface):
         frames = pygame.time.get_ticks()
         if not frames % self.interval:
-            self.value = choice(green_katakana if color == 'green' else lightgreen_katakana)
+            self.value = choice(GREEN_KATAKANA if color == 'green' else LIGHTGREEN_KATAKANA)
         self.y = self.y + self.speed if self.y < window.height_of_play_widow else -FONT_SIZE
         surface.blit(self.value, (self.x, self.y))
 
@@ -40,7 +45,7 @@ class StartScreen:
     def __init__(self, window):
         self.window = window
 
-    def draw_start_screen(self):
+    def draw_start_screen(self):   #РАЗБИТЬ НА ФУНКЦИИ
         surface = pygame.Surface(self.window.res)
         surface.set_alpha(0)
 
@@ -83,8 +88,8 @@ class StartScreen:
             surface.fill(pygame.Color('black'))
 
             [symbol_column.draw(self.window, surface) for symbol_column in symbol_columns]
-            if not pygame.time.get_ticks() % 20 and alpha_value < 90:
-                alpha_value += 6
+            if not pygame.time.get_ticks() % 20 and alpha_value < MAX_ALPHA_VALUE:
+                alpha_value += GROWTH_RATE
                 surface.set_alpha(alpha_value)
 
             pygame.display.flip()

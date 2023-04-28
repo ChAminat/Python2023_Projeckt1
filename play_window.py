@@ -41,15 +41,15 @@ class PlayWindow:
     def draw_grid(self, field):
         [pygame.draw.rect(self.game_sc, (25, 51, 0), i_rect, 1) for i_rect in self.field.grid]
 
-    def set_music(self):
+    def set_music(self, volume):
         pygame.mixer.music.load('sounds/Zion.mp3')
         pygame.mixer.music.play(loops=-1)
-        pygame.mixer.music.set_volume(0.02)
+        pygame.mixer.music.set_volume(volume)
 
-    def start(self):
+    def start(self, volume):
         self.draw_start_window()
         self.draw_play_window()
-        self.set_music()
+        self.set_music(volume)
 
     def terminate(self):
         pygame.quit()

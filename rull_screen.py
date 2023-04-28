@@ -4,7 +4,8 @@ import pygame_gui
 pygame.init()
 
 class RullScreen:
-    volume = 0.02
+    volume1 = 0.02
+    volume2 = 0.02
     sound2 = pygame.mixer.Sound('sounds/end.mp3')
 
     def __init__(self, window):
@@ -44,15 +45,15 @@ class RullScreen:
 
         self.slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(
             relative_rect=pygame.Rect((250, 370), (200, 15)),
-            start_value=self.volume, manager=self.manager2, value_range=(0, 1)
+            start_value=self.volume1, manager=self.manager2, value_range=(0, 1)
         )
 
         self.slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(
             relative_rect=pygame.Rect((250, 395), (200, 15)),
-            start_value=self.volume, manager=self.manager2, value_range=(0, 1)
+            start_value=self.volume2, manager=self.manager2, value_range=(0, 1)
         )
 
-        self.sound2.set_volume(0.02)
+        self.sound2.set_volume(self.volume2)
 
         pygame.display.flip()
 
@@ -60,13 +61,15 @@ class RullScreen:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return self.volume
+                    return self.volume2
                 if event.type == pygame.USEREVENT:
                     if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                         if event.ui_element == self.slider:
                             pygame.mixer.music.set_volume(event.value)
+                            self.volume1 = event.value
                         elif event.ui_element == self.slider2:
                             self.sound2.set_volume(event.value)
+                            self.volume2 = event.value
                 self.manager2.process_events(event)
             self.manager2.update(pygame.time.Clock().tick(60) / 1000.0)
             self.manager2.draw_ui(self.window.sc)
