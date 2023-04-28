@@ -45,7 +45,7 @@ class StartScreen:
     def __init__(self, window):
         self.window = window
 
-    def draw_start_screen(self):   #РАЗБИТЬ НА ФУНКЦИИ
+    def draw_start_screen(self):
         surface = pygame.Surface(self.window.res)
         surface.set_alpha(0)
 
