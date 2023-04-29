@@ -153,7 +153,7 @@ class Game():
     def start(self):
         self.figure, self.next_figure = self.figures_inf.new_fig(), self.figures_inf.new_fig()
         self.color, self.next_color = self.figures_inf.get_color(), self.figures_inf.get_color()
-
+        self.window.set_music(self.rull_screen.volume1)
         while True:
             self.window.start(self.rull_screen.volume1)
             running = True

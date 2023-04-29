@@ -49,7 +49,6 @@ class PlayWindow:
     def start(self, volume):
         self.draw_start_window()
         self.draw_play_window()
-        self.set_music(volume)
 
     def terminate(self):
         pygame.quit()
