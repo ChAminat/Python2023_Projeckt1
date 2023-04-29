@@ -44,53 +44,64 @@ class SymbolColumn:
 class StartScreen:
     def __init__(self, window):
         self.window = window
+        self.surface = pygame.Surface(self.window.res)
+        pygame.init()
+
+    def update_screen(self):
+        time_delta = pygame.time.Clock().tick(50) / 10000.0
+        self.manager.update(time_delta)
+        self.manager.draw_ui(self.window.sc)
+        pygame.display.update()
+        self.window.sc.blit(self.title_tetris,
+                            (self.window.res[0] // 2 - pygame.font.Font.size(self.main_font, "TETRIS")[0] // 2, 50))
+        self.window.sc.blit(self.title_tetris1,
+                            (self.window.res[0] // 2 - pygame.font.Font.size(self.main_font,
+                                                                             "matrix edition")[0] // 2 + 90, 120))
+        pygame.time.Clock().tick(50)
 
     def draw_start_screen(self):
-        surface = pygame.Surface(self.window.res)
-        surface.set_alpha(0)
-
+        self.surface.set_alpha(0)
         symbol_columns = [SymbolColumn(x, randrange(-self.window.height_of_play_widow, 0))
                           for x in range(0, self.window.width_of_play_widow, FONT_SIZE)]
 
         alpha_value = 0
-        time_delta = pygame.time.Clock().tick(50) / 1000.0
-        manager = pygame_gui.UIManager((800, 600))
-        main_font = pygame.font.Font('font/font.ttf', self.window.field.tile_size + 30)
-        note_font = pygame.font.Font('font/font.ttf', self.window.field.tile_size + 5)
-        title_tetris = main_font.render('TETRIS', True, pygame.Color('darkorange'))
-        title_tetris1 = note_font.render('matrix edition', True, pygame.Color('darkorange'))
+        self.manager = pygame_gui.UIManager((800, 600))
+        self.main_font = pygame.font.Font('font/font.ttf', self.window.field.tile_size + 30)
+        self.note_font = pygame.font.Font('font/font.ttf', self.window.field.tile_size + 5)
+        self.title_tetris = self.main_font.render('TETRIS', True, pygame.Color('darkorange'))
+        self.title_tetris1 = self.note_font.render('matrix edition', True, pygame.Color('darkorange'))
 
         start = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((150, 470), (190, 50)),
             text='Старт',
-            manager=manager
+            manager=self.manager
         )
 
         difficulty = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(
             options_list=['Easy', 'Medium', 'Hard'], starting_option='Easy',
-            relative_rect=pygame.Rect((25, 200), (120, 50)), manager=manager,
+            relative_rect=pygame.Rect((25, 200), (120, 50)), manager=self.manager,
         )
 
         rulls = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((180, 280), (120, 50)),
             text='Правила',
-            manager=manager
+            manager=self.manager
         )
         reco = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((335, 360), (120, 50)),
             text='Рекорды',
-            manager=manager
+            manager=self.manager
         )
 
         dif = 'Easy'
         while True:
-            self.window.sc.blit(surface, (0, 0))
-            surface.fill(pygame.Color('black'))
+            self.window.sc.blit(self.surface, (0, 0))
+            self.surface.fill(pygame.Color('black'))
 
-            [symbol_column.draw(self.window, surface) for symbol_column in symbol_columns]
+            [symbol_column.draw(self.window, self.surface) for symbol_column in symbol_columns]
             if not pygame.time.get_ticks() % 20 and alpha_value < MAX_ALPHA_VALUE:
                 alpha_value += GROWTH_RATE
-                surface.set_alpha(alpha_value)
+                self.surface.set_alpha(alpha_value)
 
             pygame.display.flip()
 
@@ -107,16 +118,9 @@ class StartScreen:
                             return 2, dif
                         elif event.ui_element == reco:
                             return 3, dif
-                manager.process_events(event)
-            manager.update(time_delta)
-            manager.draw_ui(self.window.sc)
-            pygame.display.update()
-            self.window.sc.blit(title_tetris,
-                                (self.window.res[0] // 2 - pygame.font.Font.size(main_font, "TETRIS")[0] // 2, 50))
-            self.window.sc.blit(title_tetris1,
-                           (self.window.res[0] // 2 - pygame.font.Font.size(main_font,
-                                                                            "matrix edition")[0] // 2 + 90, 120))
-            pygame.time.Clock().tick(50)
+                self.manager.process_events(event)
+
+            self.update_screen()
 
     def start(self):
         return self.draw_start_screen()
