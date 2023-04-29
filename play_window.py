@@ -52,4 +52,4 @@ class PlayWindow:
 
     def terminate(self):
         pygame.quit()
-        sys.exit
+        sys.exit()
