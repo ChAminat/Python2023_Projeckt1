@@ -1,6 +1,4 @@
 import pygame
-import pygame_gui
-import sys
 from copy import deepcopy
 from random import choice, randrange
 from field import Field

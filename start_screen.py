@@ -1,32 +1,25 @@
 import pygame
 import pygame_gui
-import sys
-from copy import deepcopy
 from random import choice, randrange
-
-FONT_SIZE = 20
-MAX_ALPHA_VALUE = 90
-GROWTH_RATE = 6
-START_KATAKANA_CHAR_POS = int('0x30a0', 16)
-SIZE_OF_ALPHABET = 96
+from constants import FONT_SIZE, MAX_ALPHA_VALUE, GROWTH_RATE, SIZE_OF_ALPHABET, START_KATAKANA_CHAR_POS
 
 pygame.init()
-KATAKANA = [chr(START_KATAKANA_CHAR_POS + i) for i in range(SIZE_OF_ALPHABET)]
-FONT1 = pygame.font.Font('font/MS Mincho.ttf', FONT_SIZE)
-GREEN_KATAKANA = [FONT1.render(char, True, (40, randrange(160, 256), 40)) for char in KATAKANA]
-LIGHTGREEN_KATAKANA = [FONT1.render(char, True, pygame.Color('lightgreen')) for char in KATAKANA]
+katakana = [chr(START_KATAKANA_CHAR_POS + i) for i in range(SIZE_OF_ALPHABET)]
+font1 = pygame.font.Font('font/MS Mincho.ttf', FONT_SIZE)
+green_katakana = [font1.render(char, True, (40, randrange(160, 256), 40)) for char in katakana]
+lightgreen_katakana = [font1.render(char, True, pygame.Color('lightgreen')) for char in katakana]
 
 class Symbol:
     def __init__(self, x, y, speed):
         self.x, self.y = x, y
         self.speed = speed
-        self.value = choice(GREEN_KATAKANA)
+        self.value = choice(green_katakana)
         self.interval = randrange(5, 30)
 
     def draw(self, color, window, surface):
         frames = pygame.time.get_ticks()
         if not frames % self.interval:
-            self.value = choice(GREEN_KATAKANA if color == 'green' else LIGHTGREEN_KATAKANA)
+            self.value = choice(green_katakana if color == 'green' else lightgreen_katakana)
         self.y = self.y + self.speed if self.y < window.height_of_play_widow else -FONT_SIZE
         surface.blit(self.value, (self.x, self.y))
 
